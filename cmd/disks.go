@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Piotr Karpiuk piotr.karpiuk@gmail.com
+Copyright © 2024 Piotr Karpiuk <piotr.karpiuk@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,12 +19,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package main
+package cmd
 
 import (
-	"github.com/pkarpiuk/disks-inventory/cmd"
+	"github.com/pkarpiuk/disks-inventory/core"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	cmd.Execute()
+// disksCmd represents the disks command
+var disksCmd = &cobra.Command{
+	Use:   "disks",
+	Short: "List detected partitions",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		disksInfo, err := core.DisksInfo()
+		if err != nil {
+			return err
+		}
+		core.ListDisks(disksInfo)
+		return nil
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(disksCmd)
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// disksCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// disksCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
