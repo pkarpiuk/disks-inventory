@@ -1,5 +1,4 @@
-The MIT License (MIT)
-
+/*
 Copyright © 2024 Piotr Karpiuk piotr.karpiuk@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/pkarpiuk/disks-inventory/cmd"
+	"github.com/pkarpiuk/disks-inventory/core"
+)
+
+func main() {
+	records, err := core.Walk("/home/piotrek/git/disks-inventory", os.Stdout, nil)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println()
+	cache := make(map[string]*core.LsRecord)
+	for _, rec := range records {
+		cache[rec.Path] = rec
+	}
+
+	core.Walk("/home/piotrek/git/disks-inventory", os.Stdout, cache)
+
+	core.Magic("/home/piotrek/arch-process.rb")
+	disksInfo, err := core.DisksInfo()
+	if err != nil {
+		panic(err)
+	}
+	core.ListDisks(disksInfo)
+	cmd.Execute()
+}
